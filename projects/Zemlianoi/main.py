@@ -68,8 +68,15 @@ def fill_ru():
     ru[pygame.K_PERIOD] = 'ю'
     ru[pygame.K_BACKQUOTE] = 'ё'
 
+def check_assets():
+    if 'Sprites' not in os.listdir():
+        os.mkdir('Sprites')
+    if len(os.listdir('Sprites')) != 3:
+        gener_asset(100, 100, 'green', 1)
+        gener_asset(50, 50, 'red', 2)
+        gener_asset(50, 50, 'yellow', 3)
 
-def gener(width, height, color, file):
+def gener_asset(width, height, color, file):
     img = Image.new(mode="RGB", size=(width, height))
     img.putalpha(0)
     draw = ImageDraw.Draw(img)
@@ -137,10 +144,7 @@ class Unit(Ball):
 
     def update_color(self):
         self.image = pygame.image.load("Sprites/2.png")
-        self.rect = self.image.get_rect()
-
-
-
+        # self.rect = self.image.get_rect()
 
 
 def terminate():
@@ -200,15 +204,11 @@ def get_enemy():
         enemy = Unit(x, y, 'en', random.choice(lvl_1), all_sprites)
     return enemy
 
-
-if len(os.listdir('Sprites')) != 3:
-    gener(100, 100, 'green', 1)
-    gener(50, 50, 'red', 2)
-    gener(50, 50, 'yellow', 3)
+check_assets()
 player = Ball(550, 350, 'pl', all_sprites)
 player_group.add(player)
 fill_ru()
-print(ru)
+
 screen.fill('Black')
 start_screen()
 f1 = pygame.font.SysFont('san-serif', 48)
@@ -252,6 +252,7 @@ while not hit:
                 enemys[0].rect.top < player.rect.bottom:
             hit = True
     pygame.display.flip()
+    clock.tick(FPS)
 for i in enemys:
     i.Vx, i.Vy = 0, 0
     i.kill()
@@ -261,3 +262,8 @@ while True:
                       (180, 0, 0))
     screen.fill('Black')
     screen.blit(text1, (10, 50))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            terminate()
+    pygame.display.flip()
+
